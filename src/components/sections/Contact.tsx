@@ -54,12 +54,12 @@ function FloatingField({
     width: '100%',
     background: 'none',
     border: 'none',
-    borderBottom: `1.5px solid ${error ? '#ef4444' : focused ? 'var(--color-orange)' : 'var(--color-border)'}`,
+    borderBottom: `1.5px solid ${error ? '#ef4444' : focused ? '#ffffff' : '#2D2D2D'}`,
     outline: 'none',
     fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
     fontSize: '16px',
     fontWeight: 400,
-    color: 'var(--color-ink)',
+    color: '#ffffff',
     padding: '24px 0 8px',
     lineHeight: '1.5',
     resize: 'none',
@@ -103,7 +103,7 @@ function FloatingField({
           fontWeight: 400,
           letterSpacing: isFloated ? '0.08em' : '0',
           textTransform: isFloated ? 'uppercase' : 'none',
-          color: error ? '#ef4444' : focused ? 'var(--color-orange)' : 'var(--color-ink)',
+          color: error ? '#ef4444' : focused ? '#ffffff' : '#ffffff',
           opacity: isFloated ? 0.7 : 0.45,
           pointerEvents: 'none',
           transformOrigin: 'left top',
@@ -150,7 +150,7 @@ function FloatingField({
           left: 0,
           height: '1.5px',
           width: '100%',
-          backgroundColor: error ? '#ef4444' : 'var(--color-orange)',
+          backgroundColor: error ? '#ef4444' : '#ffffff',
           transformOrigin: 'left center',
           transform: focused ? 'scaleX(1)' : 'scaleX(0)',
           transition: 'transform 250ms cubic-bezier(0.16, 1, 0.3, 1)',
@@ -262,14 +262,13 @@ export default function Contact() {
       ref={sectionRef}
       id="contact"
       style={{
-        padding: 'clamp(80px, 10vw, 160px) 48px',
-        backgroundColor: 'var(--color-canvas)',
+        padding: `clamp(60px, 8vw, 120px) clamp(12px, 1.04vw, 15px)`,
+        backgroundColor: '#000000',
+        borderTop: '1px solid #2D2D2D',
       }}
     >
       <div
         style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '80px',
@@ -283,26 +282,25 @@ export default function Contact() {
             style={{
               display: 'block',
               fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
-              fontSize: '13px',
+              fontSize: '11px',
               fontWeight: 400,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              color: 'var(--color-ink)',
-              opacity: 0.5,
+              color: '#747474',
               marginBottom: '24px',
             }}
           >
-            Start a project
+            Contact
           </span>
 
           <h2
             style={{
               fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
               fontSize: 'clamp(28px, 3.5vw, 48px)',
-              fontWeight: 500,
+              fontWeight: 400,
               lineHeight: '1.1',
               letterSpacing: '-0.01em',
-              color: 'var(--color-ink)',
+              color: '#ffffff',
               marginBottom: '24px',
             }}
           >
@@ -312,10 +310,9 @@ export default function Contact() {
           <p
             style={{
               fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
-              fontSize: '16px',
+              fontSize: '14px',
               lineHeight: '1.65',
-              color: 'var(--color-ink)',
-              opacity: 0.6,
+              color: '#747474',
               maxWidth: '44ch',
             }}
           >
@@ -338,7 +335,7 @@ export default function Contact() {
                   fontSize: 'clamp(28px, 3vw, 40px)',
                   fontWeight: 500,
                   letterSpacing: '-0.01em',
-                  color: 'var(--color-ink)',
+                  color: '#ffffff',
                   marginBottom: '16px',
                 }}
               >
@@ -349,7 +346,7 @@ export default function Contact() {
                   fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
                   fontSize: '16px',
                   lineHeight: '1.65',
-                  color: 'var(--color-ink)',
+                  color: '#ffffff',
                   opacity: 0.6,
                 }}
               >
@@ -417,8 +414,8 @@ export default function Contact() {
                     alignItems: 'center',
                     gap: '12px',
                     padding: '16px 36px',
-                    backgroundColor: status === 'submitting' ? 'var(--color-border)' : 'var(--color-ink)',
-                    color: 'var(--color-canvas)',
+                    backgroundColor: status === 'submitting' ? '#2D2D2D' : '#ffffff',
+                    color: '#000000',
                     fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
                     fontSize: '15px',
                     fontWeight: 500,
@@ -430,12 +427,12 @@ export default function Contact() {
                   }}
                   onMouseEnter={(e) => {
                     if (status !== 'submitting') {
-                      ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--color-orange)'
+                      ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = '#ffffff'
                       ;(e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.02)'
                     }
                   }}
                   onMouseLeave={(e) => {
-                    ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--color-ink)'
+                    ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = '#ffffff'
                     ;(e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'
                   }}
                 >

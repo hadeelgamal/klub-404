@@ -1,208 +1,149 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-const FOOTER_LINKS = [
-  { label: 'Privacy', href: '/privacy' },
-  { label: 'Terms',   href: '/terms' },
-]
+const T = (size = '14px', color = '#ffffff', extra: React.CSSProperties = {}): React.CSSProperties => ({
+  fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
+  fontSize: size,
+  fontWeight: 400,
+  lineHeight: 1.55,
+  color,
+  ...extra,
+})
 
-const SOCIAL_LINKS = [
-  {
-    label: 'LinkedIn',
-    href: 'https://linkedin.com/company/klub-404',
-    icon: (
-      <svg viewBox="0 0 20 20" width="16" height="16" fill="currentColor" aria-hidden="true">
-        <path d="M4.477 2.25A2.227 2.227 0 002.25 4.477c0 1.23.997 2.227 2.227 2.227 1.23 0 2.227-.997 2.227-2.227A2.227 2.227 0 004.477 2.25zM2.5 7.5h3.75v9.75H2.5V7.5zm6.25 0h3.6v1.334h.05c.5-.95 1.723-1.95 3.55-1.95 3.8 0 4.5 2.5 4.5 5.75v6.616h-3.75v-5.866c0-1.4-.025-3.2-1.95-3.2-1.95 0-2.25 1.524-2.25 3.1v5.966H8.75V7.5z" />
-      </svg>
-    ),
-  },
-  {
-    label: 'X (Twitter)',
-    href: 'https://x.com/klub404',
-    icon: (
-      <svg viewBox="0 0 20 20" width="16" height="16" fill="currentColor" aria-hidden="true">
-        <path d="M14.994 2h2.598l-5.677 6.49L18.75 18h-5.23l-4.096-5.357L4.71 18H2.11l6.072-6.941L1.25 2h5.36l3.703 4.896L14.994 2zm-.912 14.374h1.44L5.984 3.478H4.436l9.646 12.896z" />
-      </svg>
-    ),
-  },
-]
+const LINK: React.CSSProperties = {
+  ...T('14px', '#747474'),
+  textDecoration: 'none',
+  display: 'block',
+  marginBottom: '6px',
+  transition: 'color 300ms ease',
+}
 
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null)
 
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const ctx = gsap.context(() => {
-      if (prefersReduced) {
-        gsap.set(footerRef.current, { opacity: 1 })
-        return
-      }
-
-      gsap.fromTo(
-        footerRef.current,
-        { opacity: 0 },
-        {
-          opacity: 1,
-          duration: 0.4,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: 'top 90%',
-            once: true,
-          },
-        }
-      )
-    }, footerRef)
-
-    return () => ctx.revert()
-  }, [])
-
-  const linkStyle: React.CSSProperties = {
-    fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
-    fontSize: '13px',
-    fontWeight: 400,
-    letterSpacing: '0.02em',
-    color: 'var(--color-ink)',
-    opacity: 0.5,
-    textDecoration: 'none',
-    transition: 'opacity 200ms ease',
-  }
+  // Footer is always visible — no scroll-trigger fade needed
+  useEffect(() => {}, [])
 
   return (
     <footer
       ref={footerRef}
       style={{
-        opacity: 0,
-        padding: 'clamp(48px, 6vw, 80px) 48px',
-        backgroundColor: 'var(--color-surface)',
-        borderTop: '1px solid var(--color-border)',
+        backgroundColor: '#000000',
+        borderTop: '1px solid #2D2D2D',
+        padding: '60px 24px',
       }}
     >
+      {/* 4-column grid */}
       <div
         style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: '40px',
+          marginBottom: '60px',
         }}
+        className="footer-grid"
       >
-        {/* Tagline + hub */}
-        <div style={{ marginBottom: '48px' }}>
-          <p
-            style={{
-              fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
-              fontSize: 'clamp(20px, 2vw, 28px)',
-              fontWeight: 500,
-              lineHeight: '1.2',
-              letterSpacing: '-0.01em',
-              color: 'var(--color-ink)',
-              marginBottom: '12px',
-            }}
-          >
-            Found where others stop looking.
-          </p>
-          <p
-            style={{
-              fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
-              fontSize: '14px',
-              fontWeight: 400,
-              letterSpacing: '0.06em',
-              color: 'var(--color-ink)',
-              opacity: 0.45,
-            }}
-          >
-            Cairo · Amsterdam
-          </p>
+
+        {/* Col 1 — Contact */}
+        <div>
+          <p style={T('14px', '#ffffff', { marginBottom: '20px' })}>Contact ↓</p>
+
+          <p style={T('12px', '#747474', { marginBottom: '4px' })}>Cairo</p>
+          <p style={T('12px', '#747474', { marginBottom: '4px' })}>Egypt</p>
+          <a href="mailto:hello@klub-404.com" style={{ ...LINK, fontSize: '12px', marginBottom: '16px' }}>
+            hello@klub-404.com
+          </a>
+
+          <p style={T('12px', '#747474', { marginBottom: '4px' })}>Amsterdam</p>
+          <p style={T('12px', '#747474', { marginBottom: '4px' })}>The Netherlands</p>
+          <a href="mailto:hello@klub-404.com" style={{ ...LINK, fontSize: '12px' }}>
+            hello@klub-404.com
+          </a>
         </div>
 
-        {/* Bottom bar */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '24px',
-            paddingTop: '24px',
-            borderTop: '1px solid var(--color-border)',
-          }}
-        >
-          {/* Copyright */}
-          <span
-            style={{
-              fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
-              fontSize: '13px',
-              fontWeight: 400,
-              color: 'var(--color-ink)',
-              opacity: 0.4,
-            }}
-          >
-            &copy; {new Date().getFullYear()} klub-404
-          </span>
-
-          {/* Legal links */}
-          <nav aria-label="Legal links">
-            <ul
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '24px',
-                listStyle: 'none',
-              }}
+        {/* Col 2 — Follow */}
+        <div>
+          <p style={T('14px', '#ffffff', { marginBottom: '20px' })}>Follow us</p>
+          {[
+            { label: 'Instagram', href: 'https://instagram.com/klub404' },
+            { label: 'LinkedIn',  href: 'https://linkedin.com/company/klub-404' },
+            { label: 'X (Twitter)', href: 'https://x.com/klub404' },
+          ].map(({ label, href }) => (
+            <a
+              key={href}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={LINK}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#ffffff')}
+              onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#747474')}
             >
-              {FOOTER_LINKS.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    style={linkStyle}
-                    data-cursor-state="hover-link"
-                    onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.opacity = '0.8')}
-                    onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.opacity = '0.5')}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+              {label}
+            </a>
+          ))}
+        </div>
 
-          {/* Social links */}
-          <nav aria-label="Social links">
-            <ul
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '20px',
-                listStyle: 'none',
-              }}
+        {/* Col 3 — More */}
+        <div>
+          <p style={T('14px', '#ffffff', { marginBottom: '20px' })}>More</p>
+          {[
+            { label: 'Work',    href: '#work' },
+            { label: 'Studio',  href: '#studio' },
+            { label: 'Hubs',    href: '#hubs' },
+          ].map(({ label, href }) => (
+            <a
+              key={href}
+              href={href}
+              style={LINK}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#ffffff')}
+              onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#747474')}
             >
-              {SOCIAL_LINKS.map((social) => (
-                <li key={social.href}>
-                  <a
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    data-cursor-state="hover-link"
-                    style={{
-                      display: 'inline-flex',
-                      color: 'var(--color-ink)',
-                      opacity: 0.45,
-                      transition: 'opacity 200ms ease',
-                    }}
-                    onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.opacity = '1')}
-                    onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.opacity = '0.45')}
-                  >
-                    {social.icon}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+              {label}
+            </a>
+          ))}
+        </div>
+
+        {/* Col 4 — Legal */}
+        <div>
+          <p style={T('12px', '#747474', { marginBottom: '8px' })}>
+            All rights reserved. Copyright &copy;{new Date().getFullYear()}
+          </p>
+          <p style={T('12px', '#2D2D2D')}>
+            KLUB404 is a venture studio registered in Egypt & the Netherlands.
+          </p>
         </div>
       </div>
+
+      {/* Bottom bar — wordmark */}
+      <div style={{ borderTop: '1px solid #2D2D2D', paddingTop: '24px' }}>
+        <p
+          style={{
+            fontFamily: 'var(--font-display), system-ui, sans-serif',
+            fontSize: 'clamp(32px, 6vw, 80px)',
+            fontWeight: 900,
+            color: '#2D2D2D',
+            lineHeight: 1,
+            letterSpacing: '-0.02em',
+            userSelect: 'none',
+          }}
+        >
+          KLUB404
+        </p>
+      </div>
+
+      <style>{`
+        @media (max-width: 767px) {
+          .footer-grid {
+            grid-template-columns: 1fr 1fr !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .footer-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </footer>
   )
 }

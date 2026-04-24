@@ -1,199 +1,145 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+const PAD = 'clamp(12px, 1.04vw, 15px)'
 
-interface Pillar {
-  number: string
-  headline: string
-  body: string
-  rotation: string
+const label: React.CSSProperties = {
+  fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
+  fontSize: '11px',
+  fontWeight: 400,
+  letterSpacing: '0.08em',
+  textTransform: 'uppercase',
+  color: '#747474',
 }
 
-const PILLARS: Pillar[] = [
+const OFFERINGS = [
   {
-    number: '01',
-    headline: 'A hybrid. Not a compromise.',
-    body: 'We operate at the intersection of agency and incubator. When clients need delivery, we deliver. When the problem demands equity, we build for ownership. The model follows the problem.',
-    rotation: 'rotate(1.5deg)',
+    category: 'Product & Design',
+    items: [
+      { name: 'Interface Design', desc: 'Minimalist visuals with expansive space and bold text.' },
+      { name: 'User Experience (UX)', desc: 'Mapping the simplest path for your customers.' },
+      { name: 'Creative Concepts', desc: 'Developing the "big idea" behind your brand.' },
+    ],
   },
   {
-    number: '02',
-    headline: 'Cairo and Amsterdam. The region between.',
-    body: 'Two offices that together cover more of the real EMEA than a single London studio ever could. One foot in emerging markets, one in mature ones. We know both.',
-    rotation: 'rotate(-1.5deg)',
+    category: 'Strategy & Content',
+    items: [
+      { name: 'Digital Strategy', desc: 'Data-driven insights to find your place in the market.' },
+      { name: 'AI-Powered Campaigns', desc: 'Rapid, high-quality marketing content and visuals.' },
+      { name: 'Smart Automation', desc: 'AI workflows to keep your operations lean and fast.' },
+    ],
   },
   {
-    number: '03',
-    headline: 'Experiences that solve something.',
-    body: 'We do not make things pretty for the sake of pretty. Every interaction we design is in service of a real outcome — for the user and for the business. Craft in service of purpose.',
-    rotation: 'rotate(1.5deg)',
+    category: 'Experience & Launch',
+    items: [
+      { name: 'Web & App Development', desc: 'Clean, scalable code using modern tech.' },
+      { name: 'Digital Touchpoints', desc: 'Polished interactions from sign-up to checkout.' },
+      { name: 'Virtual Events', desc: 'Online launches and workshops to build momentum.' },
+    ],
   },
 ]
 
 export default function Pillars() {
-  const sectionRef = useRef<HTMLDivElement>(null)
-  const cardsRef = useRef<HTMLElement[]>([])
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    const ctx = gsap.context(() => {
-      cardsRef.current.forEach((card, i) => {
-        if (!card) return
-
-        if (prefersReduced) {
-          gsap.set(card, { opacity: 1, y: 0 })
-          return
-        }
-
-        gsap.fromTo(
-          card,
-          { opacity: 0, y: 24 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: "power3.out",
-            delay: i * 0.12,
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 85%',
-              once: true,
-            },
-          }
-        )
-      })
-    }, sectionRef)
-
-    return () => ctx.revert()
-  }, [])
-
   return (
     <section
-      ref={sectionRef}
-      style={{
-        padding: 'clamp(80px, 10vw, 160px) 48px',
-        backgroundColor: 'var(--color-canvas)',
-      }}
+      id="offerings"
+      style={{ backgroundColor: '#000000', borderTop: '1px solid #2D2D2D' }}
     >
+      {/* Section label row */}
       <div
         style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
+          borderBottom: '1px solid #2D2D2D',
+          padding: `20px ${PAD}`,
         }}
       >
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '24px',
-          }}
-          className="pillars-grid"
-        >
-          {PILLARS.map((pillar, i) => (
-            <article
-              key={pillar.number}
-              ref={(el) => {
-                if (el) cardsRef.current[i] = el
-              }}
+        <span style={label}>Our Core Offerings</span>
+      </div>
+
+      {/* 3-column offerings grid */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+        }}
+        className="offerings-grid"
+      >
+        {OFFERINGS.map((offering, colIdx) => (
+          <div
+            key={offering.category}
+            style={{
+              borderRight: colIdx < 2 ? '1px solid #2D2D2D' : 'none',
+            }}
+            className="offering-col"
+          >
+            {/* Category header */}
+            <div
               style={{
-                opacity: 0,
-                padding: '40px 32px',
-                backgroundColor: 'var(--color-surface)',
-                border: '1px solid var(--color-border)',
-                transform: pillar.rotation,
-                /*
-                 * box-shadow triggers Paint on every frame — replaced with a
-                 * pseudo-element shadow technique via CSS class, or we simply
-                 * transition only transform here. The visual lift (translateY)
-                 * is compositor-safe; the shadow is a CSS-only static value
-                 * switched via a class toggle so Paint happens only once on
-                 * state change, not every animation frame.
-                 */
-                transition: 'transform 250ms cubic-bezier(0.34,1.56,0.64,1)',
-                cursor: 'default',
-              }}
-              className="pillar-card"
-              onMouseEnter={(e) => {
-                const card = e.currentTarget
-                // Preserve rotation, add compositor-safe translateY lift
-                card.style.transform = `${pillar.rotation} translateY(-6px)`
-                // Add shadow via class — Paint fires once on class add, not per frame
-                card.classList.add('pillar-card--hovered')
-              }}
-              onMouseLeave={(e) => {
-                const card = e.currentTarget
-                card.style.transform = pillar.rotation
-                card.classList.remove('pillar-card--hovered')
+                borderBottom: '1px solid #2D2D2D',
+                padding: `20px ${PAD}`,
               }}
             >
-              <span
-                style={{
-                  display: 'block',
-                  fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
-                  fontSize: '13px',
-                  fontWeight: 400,
-                  letterSpacing: '0.08em',
-                  color: 'var(--color-orange)',
-                  marginBottom: '24px',
-                }}
-              >
-                {pillar.number}
-              </span>
-
-              <h2
-                style={{
-                  fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
-                  fontSize: 'clamp(20px, 1.8vw, 24px)',
-                  fontWeight: 500,
-                  lineHeight: '1.2',
-                  letterSpacing: '-0.01em',
-                  color: 'var(--color-ink)',
-                  marginBottom: '20px',
-                }}
-              >
-                {pillar.headline}
-              </h2>
-
               <p
                 style={{
                   fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
-                  fontSize: '16px',
-                  fontWeight: 400,
-                  lineHeight: '1.65',
-                  color: 'var(--color-ink)',
-                  opacity: 0.7,
+                  fontSize: '15px',
+                  fontWeight: 500,
+                  color: '#ffffff',
+                  lineHeight: 1.3,
                 }}
               >
-                {pillar.body}
+                {offering.category}
               </p>
-            </article>
-          ))}
-        </div>
+            </div>
+
+            {/* Service items */}
+            {offering.items.map((item, itemIdx) => (
+              <div
+                key={item.name}
+                style={{
+                  padding: `24px ${PAD}`,
+                  borderBottom: itemIdx < offering.items.length - 1 ? '1px solid #2D2D2D' : 'none',
+                }}
+              >
+                <p
+                  style={{
+                    fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
+                    fontSize: '14px',
+                    fontWeight: 400,
+                    color: '#ffffff',
+                    marginBottom: '6px',
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {item.name}
+                </p>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    color: '#747474',
+                    lineHeight: 1.55,
+                  }}
+                >
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
 
       <style>{`
-        @media (max-width: 900px) {
-          .pillars-grid {
+        @media (max-width: 767px) {
+          .offerings-grid {
             grid-template-columns: 1fr !important;
-            gap: 32px !important;
           }
-        }
-        @media (min-width: 901px) and (max-width: 1100px) {
-          .pillars-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
+          .offering-col {
+            border-right: none !important;
+            border-bottom: 1px solid #2D2D2D;
           }
-        }
-        /*
-         * Shadow applied as a static class toggle — Paint fires once when the
-         * class is added/removed, not on every animation frame. This avoids
-         * box-shadow being part of the transform transition chain.
-         */
-        .pillar-card--hovered {
-          box-shadow: 0 20px 60px rgba(13, 13, 13, 0.10);
+          .offering-col:last-child {
+            border-bottom: none;
+          }
         }
       `}</style>
     </section>
