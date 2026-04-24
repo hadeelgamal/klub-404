@@ -45,6 +45,7 @@ export default function Hero() {
   const sectionRef  = useRef<HTMLElement>(null)
   const klubRef     = useRef<SVGGElement>(null)
   const for404Ref   = useRef<SVGGElement>(null)
+  const strikeRef   = useRef<SVGRectElement>(null)
   const navRowRef   = useRef<HTMLDivElement>(null)
   const taglineRef  = useRef<HTMLParagraphElement>(null)
   const marqueeRef  = useRef<HTMLDivElement>(null)
@@ -61,34 +62,33 @@ export default function Hero() {
     }
 
     const ctx = gsap.context(() => {
-      gsap.set(klubRef.current,   { yPercent: -110 })
-      gsap.set(for404Ref.current, { yPercent:  110 })
+      gsap.set(klubRef.current,    { yPercent: -110 })
+      gsap.set(for404Ref.current,  { yPercent:  110 })
+      gsap.set(taglineRef.current, { yPercent:  200 })
+      gsap.set(strikeRef.current,  { attr: { width: 0 } })
 
-      const tl = gsap.timeline()
+      // Single sweep: KLUB top→bottom, 404 bottom→top — repeat: -1 resets off-screen invisibly
+      const loopTl = gsap.timeline({ repeat: -1 })
+      loopTl
+        .fromTo(klubRef.current,   { yPercent: -110 }, { yPercent:  110, duration: 0.375, ease: 'none' }, 0)
+        .fromTo(for404Ref.current, { yPercent:  110 }, { yPercent: -110, duration: 0.375, ease: 'none' }, 0)
 
-      tl.to([klubRef.current, for404Ref.current], {
-        yPercent: 0,
-        duration: 1.4,
-        ease: 'power3.out',
+      // After 3 s: stop loop, settle, then reveal nav / tagline / ticker
+      gsap.delayedCall(1, () => {
+        loopTl.kill()
+        const tl = gsap.timeline()
+        tl
+          .to(klubRef.current,   { yPercent: 0, duration: 0.9, ease: 'power3.out' }, 0)
+          .to(for404Ref.current, { yPercent: 0, duration: 0.9, ease: 'power3.out' }, 0)
+          .to(strikeRef.current, { attr: { width: 960 }, duration: 0.9, ease: 'power3.in' }, 0)
+          .fromTo(taglineRef.current,
+            { yPercent: 200 },
+            { yPercent: 0, duration: 1.5, ease: 'cubic-bezier(0, 1, 0.2, 1)' },
+            0
+          )
+          .to(navRowRef.current, { opacity: 1, duration: 0.8, ease: 'power1.inOut' }, 0)
+          .to(marqueeRef.current, { opacity: 1, duration: 0.6, ease: 'none' }, '-=0.9')
       })
-
-      // Nav row fades in once text settles
-      .to(navRowRef.current, {
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power1.inOut',
-      }, '+=0.05')
-
-      // Tagline rises from below
-      .fromTo(
-        taglineRef.current,
-        { yPercent: 200 },
-        { yPercent: 0, duration: 1.5, ease: 'cubic-bezier(0, 1, 0.2, 1)' },
-        '-=0.4'
-      )
-
-      // Ticker fades in
-      .to(marqueeRef.current, { opacity: 1, duration: 0.6, ease: 'none' }, '-=0.9')
 
       // ── Scroll: fade lower elements as hero scrolls away
       const scrollTl = gsap.timeline({
@@ -158,6 +158,7 @@ export default function Hero() {
               KLUB
             </text>
           </g>
+          <rect ref={strikeRef} x="0" y="100" width="0" height="14" fill="#ffffff" />
           <g ref={for404Ref} style={{ willChange: 'transform' }}>
             <text
               x="549"
