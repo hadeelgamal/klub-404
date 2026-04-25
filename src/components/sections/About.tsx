@@ -3,37 +3,34 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CyberneticGridShader from '@/components/ui/cybernetic-grid-shader'
 
 const PAD = 'clamp(12px, 1.04vw, 15px)'
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null)
-  const leftRef = useRef<HTMLDivElement>(null)
-  const rightRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
 
     const ctx = gsap.context(() => {
-      gsap.from(leftRef.current, {
-        y: 40, opacity: 0,
-        duration: 1, ease: 'power2.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 75%',
-          toggleActions: 'play none none reverse',
-        },
-      })
-
-      gsap.from(rightRef.current, {
-        y: 40, opacity: 0,
-        duration: 1, ease: 'power2.out', delay: 0.12,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 72%',
-          toggleActions: 'play none none reverse',
-        },
-      })
+      // Parallax: content rises from below as section scrolls into view
+      gsap.fromTo(
+        contentRef.current,
+        { y: 120, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top bottom',
+            end: 'center center',
+            scrub: 1.5,
+          },
+        }
+      )
     }, sectionRef)
 
     return () => ctx.revert()
@@ -44,51 +41,47 @@ export default function About() {
       ref={sectionRef}
       id="about"
       style={{
+        position: 'relative',
+        overflow: 'hidden',
         backgroundColor: '#000000',
         borderTop: '1px solid #2D2D2D',
-        padding: `clamp(80px, 12vw, 160px) ${PAD}`,
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: 'clamp(24px, 4vw, 60px)',
+        padding: `clamp(120px, 18vw, 240px) ${PAD}`,
+        display: 'flex',
         alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
       }}
     >
-      <div ref={leftRef}>
-        <span
+      <CyberneticGridShader />
+      <div ref={contentRef} style={{ position: 'relative' }}>
+        <p
           style={{
             fontFamily: 'var(--font-display), system-ui, sans-serif',
-            fontSize: 'clamp(100px, 16vw, 220px)',
+            fontSize: 'clamp(36px, 6vw, 96px)',
             fontWeight: 800,
             color: '#ffffff',
-            lineHeight: 0.85,
-            letterSpacing: '-0.04em',
-            display: 'block',
+            lineHeight: 1.05,
+            letterSpacing: '-0.03em',
+            margin: 0,
           }}
         >
-          K4
-        </span>
-      </div>
-
-      <div ref={rightRef}>
+          Build. Ship. Stay.
+        </p>
         <p
           style={{
             fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
-            fontSize: 'clamp(18px, 2vw, 26px)',
+            fontSize: 'clamp(16px, 1.8vw, 26px)',
             fontWeight: 400,
-            lineHeight: 1.4,
             color: '#ffffff',
+            lineHeight: 1.4,
             letterSpacing: '-0.01em',
+            marginTop: 'clamp(12px, 1.5vw, 20px)',
+            opacity: 0.7,
           }}
         >
-          Digital partner for brands, startups and early-stage ventures. Building products, companies and experiences that combine strategy, design and technology. Operating from Cairo and Amsterdam.
+          High-end digital products for early-stage startups.
         </p>
       </div>
-
-      <style>{`
-        @media (max-width: 600px) {
-          #about { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </section>
   )
 }
