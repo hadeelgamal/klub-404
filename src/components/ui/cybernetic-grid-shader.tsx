@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
+import { gsap } from 'gsap'
 
 export default function CyberneticGridShader() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -10,8 +11,11 @@ export default function CyberneticGridShader() {
     const container = containerRef.current
     if (!container) return
 
+    // dpr declared first — used in onResize, onMouseMove, and smoothed
+    const dpr = window.devicePixelRatio
+
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setPixelRatio(dpr)
     container.appendChild(renderer.domElement)
 
     const scene = new THREE.Scene()
@@ -64,36 +68,42 @@ export default function CyberneticGridShader() {
       }
     `
 
+    // iMouse starts off-screen matching cursor ring's (-100,-100) origin, in physical px
     const uniforms = {
       iTime:       { value: 0 },
       iResolution: { value: new THREE.Vector2() },
-      iMouse:      { value: new THREE.Vector2(container.clientWidth / 2, container.clientHeight / 2) },
+      iMouse:      { value: new THREE.Vector2(-100 * dpr, -100 * dpr) },
     }
 
     const material = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms })
     const geometry = new THREE.PlaneGeometry(2, 2)
     scene.add(new THREE.Mesh(geometry, material))
 
+    // iResolution must be physical pixels — gl_FragCoord is physical when setPixelRatio > 1
     const onResize = () => {
       const w = container.clientWidth
       const h = container.clientHeight
       renderer.setSize(w, h)
-      uniforms.iResolution.value.set(w, h)
+      uniforms.iResolution.value.set(w * dpr, h * dpr)
     }
     window.addEventListener('resize', onResize)
     onResize()
 
+    // Smooth mouse with same duration + ease as Cursor.tsx so both tracks are in sync
+    const smoothed = { x: -100 * dpr, y: -100 * dpr }
+    const xTo = gsap.quickTo(smoothed, 'x', { duration: 0.35, ease: 'power3.out' })
+    const yTo = gsap.quickTo(smoothed, 'y', { duration: 0.35, ease: 'power3.out' })
+
     const onMouseMove = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect()
-      uniforms.iMouse.value.set(
-        e.clientX - rect.left,
-        container.clientHeight - (e.clientY - rect.top)
-      )
+      xTo((e.clientX - rect.left) * dpr)
+      yTo((container.clientHeight - (e.clientY - rect.top)) * dpr)
     }
     window.addEventListener('mousemove', onMouseMove)
 
     renderer.setAnimationLoop(() => {
       uniforms.iTime.value = clock.getElapsedTime()
+      uniforms.iMouse.value.set(smoothed.x, smoothed.y)
       renderer.render(scene, camera)
     })
 

@@ -12,8 +12,8 @@ export default function ClientSections() {
   return (
     <>
       <Cursor />
-      <About />
       <Features />
+      <About />
       <Work />
       <Services />
     </>
