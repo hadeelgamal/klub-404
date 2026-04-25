@@ -100,6 +100,16 @@ export default function Approach() {
       ))}
 
       <style>{`
+        .approach-step {
+          transition: background 0.25s ease, box-shadow 0.25s ease;
+          cursor: default;
+        }
+        .approach-step:hover {
+          background: rgba(255, 255, 255, 0.04);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(255,255,255,0.04);
+        }
         @media (max-width: 767px) {
           .approach-header { grid-template-columns: 1fr !important; }
           .approach-step {

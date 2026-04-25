@@ -57,7 +57,7 @@ export function DottedSurface() {
     scene.add(new THREE.Points(geometry, material))
 
     let count = 0
-    let animId: number
+    let animId: number | null = null
 
     const animate = () => {
       animId = requestAnimationFrame(animate)
@@ -83,18 +83,26 @@ export function DottedSurface() {
       renderer.setSize(w, h, false)
     }
 
-    // ResizeObserver fires as soon as the container has layout dimensions
     const ro = new ResizeObserver(entries => {
       const { width, height } = entries[0].contentRect
       resize(width, height)
     })
     ro.observe(container)
 
-    animate()
+    // Start the wave only when the section scrolls into view
+    const io = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        if (!animId) animate()
+      } else {
+        if (animId !== null) { cancelAnimationFrame(animId); animId = null }
+      }
+    }, { threshold: 0.05 })
+    io.observe(container)
 
     return () => {
+      io.disconnect()
       ro.disconnect()
-      cancelAnimationFrame(animId)
+      if (animId !== null) cancelAnimationFrame(animId)
       scene.traverse(obj => {
         if (obj instanceof THREE.Points) {
           obj.geometry.dispose()
