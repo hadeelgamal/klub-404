@@ -15,7 +15,6 @@ export default function About() {
     gsap.registerPlugin(ScrollTrigger)
 
     const ctx = gsap.context(() => {
-      // Parallax: content rises from below as section scrolls into view
       gsap.fromTo(
         contentRef.current,
         { y: 120, opacity: 0 },
@@ -45,7 +44,8 @@ export default function About() {
         overflow: 'hidden',
         backgroundColor: '#000000',
         borderTop: '1px solid #2D2D2D',
-        padding: `clamp(120px, 18vw, 240px) ${PAD}`,
+        minHeight: '100vh',
+        padding: `0 ${PAD}`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -65,7 +65,7 @@ export default function About() {
             margin: 0,
           }}
         >
-          Build. Ship. Stay.
+          How We Build
         </p>
         <p
           style={{
@@ -77,9 +77,11 @@ export default function About() {
             letterSpacing: '-0.01em',
             marginTop: 'clamp(12px, 1.5vw, 20px)',
             opacity: 0.7,
+            maxWidth: '36ch',
+            marginInline: 'auto',
           }}
         >
-          High-end digital products for early-stage startups.
+          Our process is designed for clarity and speed. We don&apos;t just build features; we solve problems.
         </p>
       </div>
     </section>
