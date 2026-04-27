@@ -169,6 +169,7 @@ export default function Work() {
           {/* Right — project visual */}
           <div
             ref={el => { imgRefs.current[i] = el }}
+            className="work-visual"
             style={{ background: project.bg, position: 'relative', overflow: 'hidden' }}
           >
             {/* Inner mock-up frame */}
@@ -233,8 +234,18 @@ export default function Work() {
       ))}
 
       <style>{`
+        @media (max-width: 900px) {
+          .work-row {
+            grid-template-columns: clamp(160px, 22vw, 260px) 1fr !important;
+            min-height: clamp(200px, 32vw, 420px) !important;
+          }
+        }
         @media (max-width: 600px) {
-          .work-row { grid-template-columns: 1fr !important; }
+          .work-row {
+            grid-template-columns: 1fr !important;
+            min-height: auto !important;
+          }
+          .work-visual { min-height: 180px; }
         }
       `}</style>
     </section>

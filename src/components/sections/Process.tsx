@@ -161,10 +161,25 @@ export default function Process() {
           -webkit-backdrop-filter: blur(16px);
           box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(255,255,255,0.04);
         }
+        @media (max-width: 900px) {
+          .process-step {
+            grid-template-columns: auto 1fr !important;
+            align-items: start !important;
+            gap: 4px 24px !important;
+          }
+          .process-step .ps-num {
+            grid-row: span 2;
+            align-self: center;
+          }
+        }
         @media (max-width: 767px) {
           .process-step {
             grid-template-columns: 1fr !important;
+            align-items: stretch !important;
             gap: 12px !important;
+          }
+          .process-step .ps-num {
+            grid-row: auto;
           }
         }
       `}</style>

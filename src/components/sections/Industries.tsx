@@ -211,6 +211,7 @@ export default function Industries() {
             {/* Right — animated visual */}
             <div
               ref={el => { imgRefs.current[i] = el }}
+              className="industry-visual"
               style={{ background: industry.bg, position: 'relative', overflow: 'hidden' }}
             >
               <Visual accent={industry.accent} />
@@ -256,8 +257,23 @@ export default function Industries() {
           to   { transform: rotate(360deg); }
         }
 
+        @media (max-width: 900px) {
+          .industry-row {
+            grid-template-columns: clamp(160px, 22vw, 260px) 1fr !important;
+            min-height: clamp(200px, 32vw, 420px) !important;
+          }
+        }
         @media (max-width: 600px) {
-          .industry-row { grid-template-columns: 1fr !important; }
+          .industry-row {
+            grid-template-columns: 1fr !important;
+            min-height: auto !important;
+          }
+          .industry-visual { min-height: 180px; }
+        }
+        @media (pointer: coarse) {
+          .pulse-ring, .lens-a, .lens-b, .grid-rotate {
+            animation-play-state: paused;
+          }
         }
       `}</style>
     </section>

@@ -179,6 +179,7 @@ export default function Hero() {
       {/* ── Nav row ─────────────────────────────────────────────────────────── */}
       <div
         ref={navRowRef}
+        className="hero-nav-row"
         style={{
           opacity: 0,
           display: 'grid',
@@ -190,7 +191,7 @@ export default function Hero() {
           flexShrink: 0,
         }}
       >
-        <span style={{ ...body, color: '#747474', fontSize: '13px' }}>
+        <span style={{ ...body, color: '#747474', fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           KLUB404 · Cairo &amp; Amsterdam
         </span>
         <a
@@ -213,7 +214,7 @@ export default function Hero() {
       </div>
 
       {/* ── Spacer ────────────────────────────────────────────────────────── */}
-      <div style={{ flex: 1 }} />
+      <div className="hero-spacer" style={{ flex: 1 }} />
 
       {/* ── Tagline ───────────────────────────────────────────────────────── */}
       <div
@@ -277,10 +278,15 @@ export default function Hero() {
       </div>
 
       <style>{`
-        @media (max-width: 600px) {
-          .hero-clock        { display: none !important; }
+        @media (max-width: 900px) {
           .hero-tagline-grid { grid-template-columns: 1fr !important; }
           .hero-tagline-grid > div:first-child { display: none !important; }
+          #hero { min-height: auto !important; }
+          .hero-spacer { flex: none !important; height: clamp(32px, 5vh, 56px); }
+        }
+        @media (max-width: 600px) {
+          .hero-nav-row  { grid-template-columns: 1fr auto !important; }
+          .hero-clock    { display: none !important; }
         }
       `}</style>
     </section>
