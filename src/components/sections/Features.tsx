@@ -4,28 +4,14 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Zap, Sparkles, Settings2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 const PAD = 'clamp(12px, 1.04vw, 15px)'
 
-const FEATURES = [
-  {
-    icon: <Zap size={22} aria-hidden />,
-    title: 'From Ideation to MVP with Speed',
-    body: 'We move from a concept to a functional, market-ready product in weeks, not months.',
-    hue: '280, 58, 237',   // purple
-  },
-  {
-    icon: <Sparkles size={22} aria-hidden />,
-    title: 'AI-Integrated Architecture',
-    body: 'We use AI-assisted development and intelligent agents from day one to speed up the building process and refine the final output.',
-    hue: '0, 200, 255',    // cyan
-  },
-  {
-    icon: <Settings2 size={22} aria-hidden />,
-    title: 'Lean Economics',
-    body: 'Our workflows are built to keep your team small and your impact large, using smart automation to handle the repetitive while you focus on the vision.',
-    hue: '255, 60, 140',   // pink
-  },
+const FEATURE_ICONS = [
+  { icon: <Zap size={22} aria-hidden />,      hue: '280, 58, 237' },
+  { icon: <Sparkles size={22} aria-hidden />, hue: '0, 200, 255'  },
+  { icon: <Settings2 size={22} aria-hidden />, hue: '255, 60, 140' },
 ]
 
 function HoloCard({ icon, title, body, hue }: {
@@ -157,6 +143,10 @@ function HoloCard({ icon, title, body, hue }: {
 }
 
 export default function Features() {
+  const t       = useTranslations('features')
+  const items   = t.raw('items') as { title: string; body: string }[]
+  const FEATURES = items.map((item, i) => ({ ...FEATURE_ICONS[i], ...item }))
+
   const sectionRef = useRef<HTMLElement>(null)
   const headingRef = useRef<HTMLDivElement>(null)
   const cardRefs   = useRef<(HTMLDivElement | null)[]>([])
@@ -213,7 +203,7 @@ export default function Features() {
             letterSpacing: '-0.03em',
           }}
         >
-          How we work
+          {t('heading')}
         </h2>
         <p
           style={{
@@ -225,7 +215,7 @@ export default function Features() {
             margin: 'clamp(12px, 1.5vw, 18px) auto 0',
           }}
         >
-          Workflows Tailored to Early-Stage Startups
+          {t('subheading')}
         </p>
         <p
           style={{
@@ -238,7 +228,7 @@ export default function Features() {
             lineHeight: 1.6,
           }}
         >
-          We understand the constraints of the early market. Our process is designed to maximize your runway while sharpening your product&apos;s competitive edge.
+          {t('body')}
         </p>
       </div>
 

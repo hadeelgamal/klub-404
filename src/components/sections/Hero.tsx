@@ -1,22 +1,24 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useTranslations, useLocale } from 'next-intl'
 
 /* ─── Live clock (Cairo time) ─────────────────────────────────────────────── */
-function useClock() {
+function useClock(clockLocale: string) {
   const [time, setTime] = useState('')
   useEffect(() => {
     const fmt = () =>
-      new Date().toLocaleTimeString('en-US', {
+      new Date().toLocaleTimeString(clockLocale, {
         hour: '2-digit', minute: '2-digit', second: '2-digit',
         hour12: true, timeZone: 'Africa/Cairo',
       })
     setTime(fmt())
     const id = setInterval(() => setTime(fmt()), 1000)
     return () => clearInterval(id)
-  }, [])
+  }, [clockLocale])
   return time
 }
 
@@ -30,67 +32,70 @@ const body: React.CSSProperties = {
 
 const PAD = 'clamp(12px, 1.04vw, 15px)'
 
-/* ─── Ticker copy ─────────────────────────────────────────────────────────── */
-const TICKER = [
-  'Build', '·', 'Ship', '·', 'Stay', '·',
-  'Early-Stage Startups', '·',
-  'AI-Integrated Architecture', '·',
-  'Cairo & Amsterdam', '·',
-  'Product & Design', '·',
-  'Web & App Development', '·',
-  'Digital Strategy', '·',
-]
-
 export default function Hero() {
+  const t           = useTranslations('hero')
+  const locale      = useLocale()
+  const isAr        = locale === 'ar'
+  const TICKER      = t.raw('ticker') as string[]
   const sectionRef  = useRef<HTMLElement>(null)
+  // English wordmark refs
   const klubRef     = useRef<SVGGElement>(null)
   const for404Ref   = useRef<SVGGElement>(null)
+  // Arabic wordmark refs
+  const arabicPart1Ref = useRef<SVGGElement>(null)
+  const arabicPart2Ref = useRef<SVGGElement>(null)
+  // Shared refs
   const strikeRef   = useRef<SVGRectElement>(null)
   const navRowRef   = useRef<HTMLDivElement>(null)
   const taglineRef  = useRef<HTMLParagraphElement>(null)
   const marqueeRef  = useRef<HTMLDivElement>(null)
-  const time        = useClock()
+  const time        = useClock(useTranslations('nav')('clockLocale'))
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     if (reduced) {
-      gsap.set([klubRef.current, for404Ref.current], { yPercent: 0 })
+      if (isAr) {
+        gsap.set([arabicPart1Ref.current, arabicPart2Ref.current], { yPercent: 0 })
+      } else {
+        gsap.set([klubRef.current, for404Ref.current], { yPercent: 0 })
+      }
       gsap.set([navRowRef.current, taglineRef.current, marqueeRef.current], { opacity: 1 })
       return
     }
 
     const ctx = gsap.context(() => {
-      gsap.set(klubRef.current,    { yPercent: -110 })
-      gsap.set(for404Ref.current,  { yPercent:  110 })
+      const part1 = isAr ? arabicPart1Ref.current : klubRef.current
+      const part2 = isAr ? arabicPart2Ref.current : for404Ref.current
+      const strikeWidth = isAr ? 829 : 960
+
+      gsap.set(part1,             { yPercent: -110 })
+      gsap.set(part2,             { yPercent:  110 })
       gsap.set(taglineRef.current, { yPercent:  200 })
       gsap.set(strikeRef.current,  { attr: { width: 0 } })
 
-      // Single sweep: KLUB top→bottom, 404 bottom→top — repeat: -1 resets off-screen invisibly
       const loopTl = gsap.timeline({ repeat: -1 })
       loopTl
-        .fromTo(klubRef.current,   { yPercent: -110 }, { yPercent:  110, duration: 0.375, ease: 'none' }, 0)
-        .fromTo(for404Ref.current, { yPercent:  110 }, { yPercent: -110, duration: 0.375, ease: 'none' }, 0)
+        .fromTo(part1, { yPercent: -110 }, { yPercent:  110, duration: 0.375, ease: 'none' }, 0)
+        .fromTo(part2, { yPercent:  110 }, { yPercent: -110, duration: 0.375, ease: 'none' }, 0)
 
-      // After 3 s: stop loop, settle, then reveal nav / tagline / ticker
       gsap.delayedCall(1, () => {
         loopTl.kill()
         const tl = gsap.timeline()
         tl
-          .to(klubRef.current,   { yPercent: 0, duration: 0.9, ease: 'power3.out' }, 0)
-          .to(for404Ref.current, { yPercent: 0, duration: 0.9, ease: 'power3.out' }, 0)
-          .to(strikeRef.current, { attr: { width: 960 }, duration: 0.9, ease: 'power3.in' }, 0)
+          .to(part1, { yPercent: 0, duration: 0.9, ease: 'power3.out' }, 0)
+          .to(part2, { yPercent: 0, duration: 0.9, ease: 'power3.out' }, 0)
+          .to(strikeRef.current, { attr: { width: strikeWidth }, duration: 0.9, ease: 'power3.in' }, 0)
           .fromTo(taglineRef.current,
             { yPercent: 200 },
             { yPercent: 0, duration: 1.5, ease: 'cubic-bezier(0, 1, 0.2, 1)' },
             0
           )
-          .to(navRowRef.current, { opacity: 1, duration: 0.8, ease: 'power1.inOut' }, 0)
+          .to(navRowRef.current,  { opacity: 1, duration: 0.8, ease: 'power1.inOut' }, 0)
           .to(marqueeRef.current, { opacity: 1, duration: 0.6, ease: 'none' }, '-=0.9')
       })
 
-      // ── Scroll: fade lower elements as hero scrolls away
       const scrollTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -99,17 +104,15 @@ export default function Hero() {
           scrub: 1.2,
         },
       })
-
       scrollTl.to(
         [navRowRef.current, taglineRef.current, marqueeRef.current],
         { opacity: 0, ease: 'none' },
         0
       )
-
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [isAr])
 
   return (
     <section
@@ -124,10 +127,9 @@ export default function Hero() {
         position: 'relative',
       }}
     >
-      {/* Screen-reader label for the wordmark */}
-      <span className="sr-only">KLUB404</span>
+      <span className="sr-only">{t('srLabel')}</span>
 
-      {/* ── Wordmark: KLUB404 ─────────────────────────────────────────────── */}
+      {/* ── Wordmark ──────────────────────────────────────────────────────── */}
       <div
         style={{
           overflow: 'hidden',
@@ -138,42 +140,76 @@ export default function Hero() {
           boxSizing: 'border-box',
         }}
       >
-        <svg
-          viewBox="0 0 960 195"
-          preserveAspectRatio="xMidYMid meet"
-          style={{ width: '100%', height: 'auto', display: 'block', overflow: 'visible' }}
-          aria-hidden="true"
-        >
-          <g ref={klubRef} style={{ willChange: 'transform' }}>
-            <text
-              x="0"
-              y="175"
-              fontFamily="var(--font-display), var(--font-neue-montreal), system-ui, sans-serif"
-              fontWeight="800"
-              fontSize="195"
-              fill="#ffffff"
-              textLength="549"
-              lengthAdjust="spacingAndGlyphs"
-            >
-              KLUB
-            </text>
-          </g>
-          <rect ref={strikeRef} x="0" y="100" width="0" height="14" fill="#ffffff" />
-          <g ref={for404Ref} style={{ willChange: 'transform' }}>
-            <text
-              x="549"
-              y="175"
-              fontFamily="var(--font-display), var(--font-neue-montreal), system-ui, sans-serif"
-              fontWeight="800"
-              fontSize="195"
-              fill="#ffffff"
-              textLength="411"
-              lengthAdjust="spacingAndGlyphs"
-            >
-              404
-            </text>
-          </g>
-        </svg>
+        {isAr ? (
+          /* Arabic: رابط — height-capped to match KLUB404's visual weight */
+          <svg
+            viewBox="0 0 829 415"
+            preserveAspectRatio="xMaxYMid meet"
+            style={{ width: '100%', height: 'auto', maxHeight: 'clamp(160px, 22vw, 320px)', display: 'block', overflow: 'visible' }}
+            aria-hidden="true"
+          >
+            {/* Part 1 — big raa glyph (like KLUB, sweeps from top) */}
+            <g ref={arabicPart1Ref} style={{ willChange: 'transform' }}>
+              <g fill="#ffffff">
+                <g transform="translate(0.498403, 268.182524)">
+                  <path d="M 404.96875 -56.859375 L 404.96875 0 L 366.375 0 C 348.507812 0 332.941406 -4.46875 319.671875 -13.40625 C 307.484375 -4.46875 292.179688 0 273.765625 0 L 8.125 0 L 38.59375 -56.859375 L 94.234375 -56.859375 L 94.234375 -230.71875 L 153.125 -261.984375 L 153.125 -151.921875 C 180.476562 -177.367188 211.21875 -190.09375 245.34375 -190.09375 C 277.832031 -190.09375 303.960938 -178.71875 323.734375 -155.96875 C 340.253906 -136.75 348.515625 -113.328125 348.515625 -85.703125 L 348.515625 -77.984375 C 348.515625 -63.898438 356.363281 -56.859375 372.0625 -56.859375 Z M 271.734375 -56.859375 C 279.316406 -56.859375 284.191406 -58.210938 286.359375 -60.921875 C 288.523438 -63.628906 289.609375 -69.992188 289.609375 -80.015625 L 289.609375 -85.703125 C 289.609375 -100.328125 285.546875 -112.175781 277.421875 -121.25 C 269.296875 -130.320312 258.738281 -134.859375 245.75 -134.859375 C 227.332031 -134.859375 209.863281 -127.882812 193.34375 -113.9375 C 176.820312 -99.988281 163.414062 -80.960938 153.125 -56.859375 Z" />
+                </g>
+              </g>
+            </g>
+            {/* Strikethrough */}
+            <rect ref={strikeRef} x="0" y="132" width="0" height="14" fill="#ffffff" />
+            {/* Part 2 — remaining 3 glyphs (like 404, sweeps from bottom) */}
+            <g ref={arabicPart2Ref} style={{ willChange: 'transform' }}>
+              <g fill="#ffffff">
+                <g transform="translate(394.494511, 268.182524)">
+                  <path d="M -10.96875 0 L -10.96875 -56.859375 L 28.84375 -56.859375 C 37.507812 -56.859375 43.597656 -58.617188 47.109375 -62.140625 C 50.628906 -65.660156 52.390625 -71.753906 52.390625 -80.421875 L 52.390625 -151.515625 L 111.296875 -182.78125 L 111.296875 -77.984375 C 111.296875 -52.804688 103.441406 -33.039062 87.734375 -18.6875 C 73.921875 -6.226562 56.1875 0 34.53125 0 Z M 64.578125 95.453125 C 55.378906 95.453125 48.003906 92.675781 42.453125 87.125 C 36.898438 81.570312 34.125 74.191406 34.125 64.984375 C 34.125 55.773438 36.898438 48.460938 42.453125 43.046875 C 48.003906 37.640625 55.378906 34.9375 64.578125 34.9375 C 73.515625 34.9375 80.691406 37.640625 86.109375 43.046875 C 91.523438 48.460938 94.234375 55.773438 94.234375 64.984375 C 94.234375 74.191406 91.523438 81.570312 86.109375 87.125 C 80.691406 92.675781 73.515625 95.453125 64.578125 95.453125 Z" />
+                </g>
+                <g transform="translate(542.344606, 268.182524)">
+                  <path d="M 36.5625 0 L 36.5625 -230.71875 L 95.453125 -261.984375 L 95.453125 0 Z" />
+                </g>
+                <g transform="translate(674.353528, 268.182524)">
+                  <path d="M 116.578125 -27.21875 C 116.578125 -3.925781 111.835938 16.3125 102.359375 33.5 C 92.878906 50.695312 79.472656 63.222656 62.140625 71.078125 C 50.773438 76.492188 38.457031 79.203125 25.1875 79.203125 C 7.3125 79.203125 -10.15625 74.460938 -27.21875 64.984375 L -27.21875 13.8125 C -13.132812 21.664062 0.539062 25.59375 13.8125 25.59375 C 20.582031 25.59375 26.8125 24.507812 32.5 22.34375 C 49.007812 16.65625 57.265625 1.488281 57.265625 -23.15625 L 57.265625 -151.109375 L 116.578125 -182.78125 Z" />
+                </g>
+              </g>
+            </g>
+          </svg>
+        ) : (
+          /* English: KLUB404 */
+          <svg
+            viewBox="0 0 960 195"
+            preserveAspectRatio="xMidYMid meet"
+            style={{ width: '100%', height: 'auto', display: 'block', overflow: 'visible', direction: 'ltr' }}
+            aria-hidden="true"
+          >
+            <g ref={klubRef} style={{ willChange: 'transform' }}>
+              <text
+                x="0" y="175"
+                fontFamily="var(--font-display), var(--font-neue-montreal), system-ui, sans-serif"
+                fontWeight="800"
+                fontSize="195"
+                fill="#ffffff"
+                textLength="549"
+                lengthAdjust="spacingAndGlyphs"
+              >
+                KLUB
+              </text>
+            </g>
+            <rect ref={strikeRef} x="0" y="100" width="0" height="14" fill="#ffffff" />
+            <g ref={for404Ref} style={{ willChange: 'transform' }}>
+              <text
+                x="549" y="175"
+                fontFamily="var(--font-display), var(--font-neue-montreal), system-ui, sans-serif"
+                fontWeight="800"
+                fontSize="195"
+                fill="#ffffff"
+                textLength="411"
+                lengthAdjust="spacingAndGlyphs"
+              >
+                404
+              </text>
+            </g>
+          </svg>
+        )}
       </div>
 
       {/* ── Nav row ─────────────────────────────────────────────────────────── */}
@@ -192,7 +228,7 @@ export default function Hero() {
         }}
       >
         <span style={{ ...body, color: '#747474', fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          KLUB404 · Cairo &amp; Amsterdam
+          {t('navRow')}
         </span>
         <a
           href="#contact"
@@ -200,16 +236,16 @@ export default function Hero() {
           onMouseEnter={e => (e.currentTarget.style.opacity = '0.5')}
           onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
         >
-          Contact ↓
+          {t('contact')}
         </a>
         <span
           style={{
             ...body, fontSize: '13px', color: '#747474',
-            textAlign: 'right', fontVariantNumeric: 'tabular-nums',
+            textAlign: 'end', fontVariantNumeric: 'tabular-nums',
           }}
           className="hero-clock"
         >
-          Local time → {time}
+          {t('localTime')} {time}
         </span>
       </div>
 
@@ -240,7 +276,7 @@ export default function Hero() {
             color: '#ffffff',
           }}
         >
-          Bringing together strategy, creativity and technology to build high-end digital products for early-stage startups.
+          {t('tagline')}
         </p>
       </div>
 

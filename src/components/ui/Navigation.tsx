@@ -3,19 +3,20 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useTranslations } from 'next-intl'
 
-function useClock() {
+function useClock(clockLocale: string) {
   const [time, setTime] = useState('')
   useEffect(() => {
     const fmt = () =>
-      new Date().toLocaleTimeString('en-US', {
+      new Date().toLocaleTimeString(clockLocale, {
         hour: '2-digit', minute: '2-digit', second: '2-digit',
         hour12: true, timeZone: 'Africa/Cairo',
       })
     setTime(fmt())
     const id = setInterval(() => setTime(fmt()), 1000)
     return () => clearInterval(id)
-  }, [])
+  }, [clockLocale])
   return time
 }
 
@@ -30,7 +31,8 @@ const T: React.CSSProperties = {
 
 export default function Navigation() {
   const navRef = useRef<HTMLElement>(null)
-  const time = useClock()
+  const t = useTranslations('nav')
+  const time = useClock(t('clockLocale'))
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -64,7 +66,7 @@ export default function Navigation() {
       }}
     >
       <a href="/" style={{ ...T, fontWeight: 500, letterSpacing: '0.01em' }}>
-        KLUB404
+        {t('name')}
       </a>
 
       <a
@@ -73,14 +75,14 @@ export default function Navigation() {
         onMouseEnter={e => (e.currentTarget.style.opacity = '0.5')}
         onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
       >
-        Contact ↓
+        {t('contact')}
       </a>
 
       <span
         className="nav-clock"
-        style={{ ...T, color: '#747474', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}
+        style={{ ...T, color: '#747474', textAlign: 'end', fontVariantNumeric: 'tabular-nums' }}
       >
-        {time && `Local time → ${time}`}
+        {time && `${t('localTime')} ${time}`}
       </span>
 
       <style>{`

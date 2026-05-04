@@ -3,25 +3,15 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useTranslations } from 'next-intl'
+import { useDir } from '@/hooks/useDir'
 
 const PAD = 'clamp(12px, 1.04vw, 15px)'
 
-const STEPS = [
-  {
-    title: 'Find the real problem.',
-    desc: 'We spend our energy on diagnosis. If we cannot articulate exactly why a problem is worth solving—and for whom—we do not move. We build only what matters.',
-  },
-  {
-    title: 'AI-powered workflows.',
-    desc: 'AI is not a tool we layer on top; it is part of the architecture from day one. Whether it is intelligent agents, generative features, AI-assisted development, or automated workflows it fundamentally changes the build surface and the economics of your product. We use AI to speed up the building process and sharpen the final result.',
-  },
-  {
-    title: 'Ship. Then stay.',
-    desc: 'Shipping is not the end—it is the beginning of the interesting part. We stay inside the problem after launch. We grow with you.',
-  },
-]
-
 export default function Process() {
+  const t     = useTranslations('process')
+  const dir   = useDir()
+  const STEPS = t.raw('steps') as { title: string; desc: string }[]
   const stepRefs = useRef<(HTMLDivElement | null)[]>([])
 
   useEffect(() => {
@@ -50,11 +40,12 @@ export default function Process() {
   const handleMouseEnter = useCallback((i: number) => {
     const row = stepRefs.current[i]
     if (!row) return
+    const m = dir === 'rtl' ? -1 : 1
     gsap.to(row.querySelector('.ps-line'), { scaleY: 1, duration: 0.5, ease: 'power3.out' })
-    gsap.to(row.querySelector('.ps-num'),  { x: 14, duration: 0.55, ease: 'power2.out' })
-    gsap.to(row.querySelector('.ps-title'),{ x: 10, duration: 0.55, ease: 'power2.out', delay: 0.04 })
-    gsap.to(row.querySelector('.ps-desc'), { x: 6,  duration: 0.55, ease: 'power2.out', delay: 0.08 })
-  }, [])
+    gsap.to(row.querySelector('.ps-num'),  { x: 14 * m, duration: 0.55, ease: 'power2.out' })
+    gsap.to(row.querySelector('.ps-title'),{ x: 10 * m, duration: 0.55, ease: 'power2.out', delay: 0.04 })
+    gsap.to(row.querySelector('.ps-desc'), { x:  6 * m, duration: 0.55, ease: 'power2.out', delay: 0.08 })
+  }, [dir])
 
   const handleMouseLeave = useCallback((i: number) => {
     const row = stepRefs.current[i]
@@ -94,7 +85,7 @@ export default function Process() {
             className="ps-line"
             style={{
               position: 'absolute',
-              left: 0,
+              insetInlineStart: 0,
               top: '15%',
               height: '70%',
               width: '1px',

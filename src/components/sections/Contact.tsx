@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useTranslations } from 'next-intl'
+import { useDir } from '@/hooks/useDir'
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error'
 
@@ -37,6 +39,7 @@ function FloatingField({
   error,
   onChange,
 }: FieldProps) {
+  const dir = useDir()
   const [focused, setFocused] = useState(false)
   const [shaking, setShaking] = useState(false)
   const isFloated = focused || value.length > 0
@@ -97,7 +100,7 @@ function FloatingField({
            * transform-origin: left top so it shrinks from the left edge.
            */
           top: '20px',
-          left: 0,
+          insetInlineStart: 0,
           fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif',
           fontSize: '16px',
           fontWeight: 400,
@@ -106,7 +109,7 @@ function FloatingField({
           color: error ? '#ef4444' : focused ? '#ffffff' : '#ffffff',
           opacity: isFloated ? 0.7 : 0.45,
           pointerEvents: 'none',
-          transformOrigin: 'left top',
+          transformOrigin: `${dir === 'rtl' ? 'right' : 'left'} top`,
           transform: isFloated ? 'translateY(-16px) scale(0.6875)' : 'translateY(0) scale(1)',
           transition: 'transform 200ms ease, letter-spacing 200ms ease, color 200ms ease, opacity 200ms ease',
           userSelect: 'none',
@@ -147,11 +150,11 @@ function FloatingField({
         style={{
           position: 'absolute',
           bottom: 0,
-          left: 0,
+          insetInlineStart: 0,
           height: '1.5px',
           width: '100%',
           backgroundColor: error ? '#ef4444' : '#ffffff',
-          transformOrigin: 'left center',
+          transformOrigin: `${dir === 'rtl' ? 'right' : 'left'} center`,
           transform: focused ? 'scaleX(1)' : 'scaleX(0)',
           transition: 'transform 250ms cubic-bezier(0.16, 1, 0.3, 1)',
         }}
@@ -179,6 +182,7 @@ function FloatingField({
    CONTACT SECTION
    ============================================================ */
 export default function Contact() {
+  const t = useTranslations('contact')
   const sectionRef = useRef<HTMLDivElement>(null)
   const fieldsRef = useRef<HTMLDivElement>(null)
   const [formData, setFormData] = useState<FormData>({
@@ -226,13 +230,13 @@ export default function Contact() {
 
   const validate = useCallback((): boolean => {
     const newErrors: Partial<FormData> = {}
-    if (!formData.name.trim()) newErrors.name = 'Name is required.'
+    if (!formData.name.trim()) newErrors.name = t('errorName')
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required.'
+      newErrors.email = t('errorEmail')
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Enter a valid email address.'
+      newErrors.email = t('errorEmailInvalid')
     }
-    if (!formData.message.trim()) newErrors.message = 'Tell us what you are working on.'
+    if (!formData.message.trim()) newErrors.message = t('errorMessage')
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }, [formData])
@@ -290,7 +294,7 @@ export default function Contact() {
               marginBottom: '24px',
             }}
           >
-            Contact
+            {t('label')}
           </span>
 
           <h2
@@ -304,7 +308,7 @@ export default function Contact() {
               marginBottom: '24px',
             }}
           >
-            Tell us what you are working on.
+            {t('heading')}
           </h2>
 
           <p
@@ -316,7 +320,7 @@ export default function Contact() {
               maxWidth: '44ch',
             }}
           >
-            We come back within 2 business days. No pressure, no pitch deck required.
+            {t('body')}
           </p>
         </div>
 
@@ -339,7 +343,7 @@ export default function Contact() {
                   marginBottom: '16px',
                 }}
               >
-                Got it.
+                {t('successHeading')}
               </p>
               <p
                 style={{
@@ -350,7 +354,7 @@ export default function Contact() {
                   opacity: 0.6,
                 }}
               >
-                Your message is in. We will be back within 2 business days. Keep building.
+                {t('successBody')}
               </p>
             </div>
           ) : (
@@ -366,7 +370,7 @@ export default function Contact() {
                 <div className="contact-field" style={{ opacity: 0 }}>
                   <FloatingField
                     id="contact-name"
-                    label="Your name"
+                    label={t('nameLabel')}
                     value={formData.name}
                     onChange={updateField('name')}
                     error={errors.name}
@@ -376,7 +380,7 @@ export default function Contact() {
                 <div className="contact-field" style={{ opacity: 0 }}>
                   <FloatingField
                     id="contact-email"
-                    label="Email address"
+                    label={t('emailLabel')}
                     type="email"
                     value={formData.email}
                     onChange={updateField('email')}
@@ -387,7 +391,7 @@ export default function Contact() {
                 <div className="contact-field" style={{ opacity: 0 }}>
                   <FloatingField
                     id="contact-message"
-                    label="Tell us about it"
+                    label={t('messageLabel')}
                     value={formData.message}
                     multiline
                     onChange={updateField('message')}
@@ -398,7 +402,7 @@ export default function Contact() {
                 <div className="contact-field" style={{ opacity: 0 }}>
                   <FloatingField
                     id="contact-budget"
-                    label="Rough budget (optional)"
+                    label={t('budgetLabel')}
                     value={formData.budget}
                     onChange={updateField('budget')}
                   />
@@ -450,10 +454,10 @@ export default function Contact() {
                           display: 'inline-block',
                         }}
                       />
-                      Sending...
+                      {t('submittingBtn')}
                     </>
                   ) : (
-                    'Send it'
+                    t('submitBtn')
                   )}
                 </button>
               </div>

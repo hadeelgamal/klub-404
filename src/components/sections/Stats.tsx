@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useTranslations } from 'next-intl'
+import { useDir } from '@/hooks/useDir'
 
 interface Stat {
   value: string
@@ -10,14 +12,10 @@ interface Stat {
   sub: string
 }
 
-const STATS: Stat[] = [
-  { value: '2',    label: 'Hubs',    sub: 'Cairo and Amsterdam' },
-  { value: '3',    label: 'Sectors', sub: 'Health. Beauty. Technology.' },
-  { value: 'EMEA', label: 'Region',  sub: '70+ markets' },
-  { value: '2024', label: 'Founded', sub: '\u2014' },
-]
-
 export default function Stats() {
+  const t     = useTranslations('stats')
+  const STATS = t.raw('items') as Stat[]
+  const dir   = useDir()
   const sectionRef = useRef<HTMLDivElement>(null)
   const ruleRef = useRef<HTMLDivElement>(null)
   const itemsRef = useRef<HTMLDivElement[]>([])
@@ -32,7 +30,6 @@ export default function Stats() {
         return
       }
 
-      // Ruled line draws in
       gsap.fromTo(
         ruleRef.current,
         { scaleX: 0 },
@@ -40,7 +37,7 @@ export default function Stats() {
           scaleX: 1,
           duration: 0.7,
           ease: "power3.out",
-          transformOrigin: 'left center',
+          transformOrigin: `${dir === 'rtl' ? 'right' : 'left'} center`,
           scrollTrigger: {
             trigger: ruleRef.current,
             start: 'top 90%',
@@ -49,7 +46,6 @@ export default function Stats() {
         }
       )
 
-      // Stat items fade in with 80ms stagger
       itemsRef.current.forEach((item, i) => {
         if (!item) return
         gsap.fromTo(
@@ -71,7 +67,7 @@ export default function Stats() {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [dir])
 
   return (
     <section
@@ -82,13 +78,12 @@ export default function Stats() {
         borderTop: 'none',
       }}
     >
-      {/* Ruled line */}
       <div
         ref={ruleRef}
         style={{
           height: '1px',
           backgroundColor: 'var(--color-border)',
-          transformOrigin: 'left center',
+          transformOrigin: `${dir === 'rtl' ? 'right' : 'left'} center`,
           transform: 'scaleX(0)',
           maxWidth: '1200px',
           margin: '0 auto clamp(48px, 6vw, 80px)',

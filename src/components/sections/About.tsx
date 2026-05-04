@@ -4,10 +4,12 @@ import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import CyberneticGridShader from '@/components/ui/cybernetic-grid-shader'
+import { useTranslations } from 'next-intl'
 
 const PAD = 'clamp(12px, 1.04vw, 15px)'
 
 export default function About() {
+  const t = useTranslations('about')
   const sectionRef = useRef<HTMLElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
 
@@ -65,7 +67,7 @@ export default function About() {
             margin: 0,
           }}
         >
-          How We Build
+          {t('heading')}
         </p>
         <p
           style={{
@@ -81,7 +83,7 @@ export default function About() {
             marginInline: 'auto',
           }}
         >
-          Our process is designed for clarity and speed. We don&apos;t just build features; we solve problems.
+          {t('body')}
         </p>
       </div>
     </section>

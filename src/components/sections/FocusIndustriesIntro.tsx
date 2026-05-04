@@ -4,30 +4,17 @@ import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { DottedSurface } from '@/components/ui/dotted-surface'
+import { useTranslations } from 'next-intl'
 
 const PAD = 'clamp(12px, 1.04vw, 15px)'
 
-const INDUSTRIES = [
-  {
-    name: 'Health & Medical',
-    desc: 'Building tools that make healthcare more accessible, legible, and humane.',
-    accent: '#0ea5e9',
-  },
-  {
-    name: 'Beauty & Wellness',
-    desc: 'Specialized booking management systems and digital marketplaces.',
-    accent: '#ec4899',
-  },
-  {
-    name: 'Core Tech',
-    desc: 'Products and infrastructure that support business across the board.',
-    accent: '#7c3aed',
-  },
-]
+const INDUSTRY_ACCENTS = ['#0ea5e9', '#ec4899', '#7c3aed']
 
 type Status = 'idle' | 'sending' | 'sent' | 'error'
 
 export default function FocusIndustriesIntro() {
+  const t          = useTranslations('industries')
+  const INDUSTRIES = (t.raw('items') as { name: string; desc: string }[]).map((item, i) => ({ ...item, accent: INDUSTRY_ACCENTS[i] }))
   const headingRef = useRef<HTMLDivElement>(null)
   const colRefs    = useRef<(HTMLDivElement | null)[]>([])
   const ctaRef     = useRef<HTMLDivElement>(null)
@@ -140,7 +127,7 @@ export default function FocusIndustriesIntro() {
             marginBottom: 'clamp(16px, 2vw, 24px)',
           }}
         >
-          Focus Industries
+          {t('label')}
         </span>
         <p
           style={{
@@ -153,7 +140,7 @@ export default function FocusIndustriesIntro() {
             margin: 0,
           }}
         >
-          Who We Build For
+          {t('heading')}
         </p>
       </div>
 
@@ -174,8 +161,8 @@ export default function FocusIndustriesIntro() {
             key={industry.name}
             ref={el => { colRefs.current[i] = el }}
             style={{
-              borderLeft: `2px solid ${industry.accent}60`,
-              paddingLeft: 'clamp(16px, 2vw, 24px)',
+              borderInlineStart: `2px solid ${industry.accent}60`,
+              paddingInlineStart: 'clamp(16px, 2vw, 24px)',
             }}
           >
             <p
@@ -236,7 +223,7 @@ export default function FocusIndustriesIntro() {
             marginBottom: 'clamp(12px, 1.5vw, 20px)',
           }}
         >
-          Get in touch
+          {t('form.label')}
         </span>
         <p
           style={{
@@ -249,7 +236,7 @@ export default function FocusIndustriesIntro() {
             margin: '0 0 clamp(32px, 5vw, 56px)',
           }}
         >
-          Build with us.
+          {t('form.heading')}
         </p>
 
         {/* Form */}
@@ -263,13 +250,13 @@ export default function FocusIndustriesIntro() {
               lineHeight: 1.5,
             }}
           >
-            Message received. We&apos;ll be in touch.
+            {t('form.success')}
           </p>
         ) : (
           <form onSubmit={handleSubmit} className="contact-form" noValidate>
             <div className="contact-row">
               <div className="contact-field">
-                <label style={labelStyle}>Name</label>
+                <label style={labelStyle}>{t('form.nameLabel')}</label>
                 <input
                   type="text"
                   value={name}
@@ -277,12 +264,12 @@ export default function FocusIndustriesIntro() {
                   onFocus={() => setFocused('name')}
                   onBlur={() => setFocused(null)}
                   required
-                  placeholder="Your name"
+                  placeholder={t('form.namePlaceholder')}
                   style={inputStyle('name')}
                 />
               </div>
               <div className="contact-field">
-                <label style={labelStyle}>Email</label>
+                <label style={labelStyle}>{t('form.emailLabel')}</label>
                 <input
                   type="email"
                   value={email}
@@ -296,14 +283,14 @@ export default function FocusIndustriesIntro() {
               </div>
             </div>
             <div className="contact-field" style={{ marginTop: 'clamp(24px, 3vw, 36px)' }}>
-              <label style={labelStyle}>What are you building?</label>
+              <label style={labelStyle}>{t('form.messageLabel')}</label>
               <textarea
                 value={message}
                 onChange={e => setMessage(e.target.value)}
                 onFocus={() => setFocused('message')}
                 onBlur={() => setFocused(null)}
                 required
-                placeholder="Tell us about your project…"
+                placeholder={t('form.messagePlaceholder')}
                 rows={4}
                 style={{ ...inputStyle('message'), resize: 'none', lineHeight: 1.65 }}
               />
@@ -329,11 +316,11 @@ export default function FocusIndustriesIntro() {
                   transition: 'opacity 0.2s ease, transform 0.2s ease',
                 }}
               >
-                {status === 'sending' ? 'Sending…' : 'Send message'}
+                {status === 'sending' ? t('form.sendingBtn') : t('form.sendBtn')}
               </button>
               {status === 'error' && (
                 <span style={{ fontFamily: 'var(--font-neue-montreal), system-ui, sans-serif', fontSize: '13px', color: '#747474' }}>
-                  Something went wrong. Try again.
+                  {t('form.errorMsg')}
                 </span>
               )}
             </div>

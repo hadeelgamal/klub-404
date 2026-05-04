@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useDir } from '@/hooks/useDir'
 
 /* ============================================================
    SAMPLE DATA — Replace with real data when available
@@ -67,6 +68,7 @@ type FilterHub = 'all' | Venture['hub']
    VENTURE CARD with 3D tilt
    ============================================================ */
 function VentureCard({ venture }: { venture: Venture }) {
+  const dir = useDir()
   const cardRef = useRef<HTMLDivElement>(null)
   const rafRef = useRef<number>(0)
   const rotateRef = useRef({ x: 0, y: 0 })
@@ -162,7 +164,7 @@ function VentureCard({ venture }: { venture: Venture }) {
             style={{
               position: 'absolute',
               top: '20px',
-              right: '20px',
+              insetInlineEnd: '20px',
               fontSize: '10px',
               fontWeight: 500,
               letterSpacing: '0.1em',
@@ -282,7 +284,7 @@ function VentureCard({ venture }: { venture: Venture }) {
             right: 0,
             height: '2px',
             backgroundColor: 'var(--color-orange)',
-            transformOrigin: 'left center',
+            transformOrigin: `${dir === 'rtl' ? 'right' : 'left'} center`,
             transform: hovered ? 'scaleX(1)' : 'scaleX(0)',
             transition: hovered
               ? 'transform 200ms cubic-bezier(0.16, 1, 0.3, 1)'
@@ -396,7 +398,7 @@ function FilterBar({
         Live only
       </button>
 
-      <div style={{ marginLeft: 'auto' }}>
+      <div style={{ marginInlineStart: 'auto' }}>
         <select
           value={sort}
           onChange={(e) => onSortChange(e.target.value as SortMode)}

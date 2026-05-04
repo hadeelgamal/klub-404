@@ -1,0 +1,129 @@
+{
+  "site": {
+    "name": "klub-404",
+    "tagline": "venture studio",
+    "description": "Neither agency nor incubator. A venture studio operating from Cairo and Amsterdam, building products, companies, and experiences that solve problems worth solving."
+  },
+  "nav": {
+    "name": "KLUB404",
+    "location": "Cairo & Amsterdam",
+    "contact": "Contact ↓",
+    "localTime": "Local time →",
+    "clockLocale": "en-US"
+  },
+  "hero": {
+    "srLabel": "KLUB404",
+    "navRow": "KLUB404 · Cairo & Amsterdam",
+    "contact": "Contact ↓",
+    "localTime": "Local time →",
+    "tagline": "Bringing together strategy, creativity and technology to build high-end digital products for early-stage startups.",
+    "ticker": ["Build", "·", "Ship", "·", "Stay", "·", "Early-Stage Startups", "·", "AI-Integrated Architecture", "·", "Cairo & Amsterdam", "·", "Product & Design", "·", "Web & App Development", "·", "Digital Strategy", "·"]
+  },
+  "features": {
+    "heading": "How we work",
+    "subheading": "Workflows Tailored to Early-Stage Startups",
+    "body": "We understand the constraints of the early market. Our process is designed to maximize your runway while sharpening your product's competitive edge.",
+    "items": [
+      {
+        "title": "From Ideation to MVP with Speed",
+        "body": "We move from a concept to a functional, market-ready product in weeks, not months."
+      },
+      {
+        "title": "AI-Integrated Architecture",
+        "body": "We use AI-assisted development and intelligent agents from day one to speed up the building process and refine the final output."
+      },
+      {
+        "title": "Lean Economics",
+        "body": "Our workflows are built to keep your team small and your impact large, using smart automation to handle the repetitive while you focus on the vision."
+      }
+    ]
+  },
+  "about": {
+    "heading": "How We Build",
+    "body": "Our process is designed for clarity and speed. We don't just build features; we solve problems."
+  },
+  "process": {
+    "steps": [
+      {
+        "title": "Find the real problem.",
+        "desc": "We spend our energy on diagnosis. If we cannot articulate exactly why a problem is worth solving—and for whom—we do not move. We build only what matters."
+      },
+      {
+        "title": "AI-powered workflows.",
+        "desc": "AI is not a tool we layer on top; it is part of the architecture from day one. Whether it is intelligent agents, generative features, AI-assisted development, or automated workflows it fundamentally changes the build surface and the economics of your product. We use AI to speed up the building process and sharpen the final result."
+      },
+      {
+        "title": "Ship. Then stay.",
+        "desc": "Shipping is not the end—it is the beginning of the interesting part. We stay inside the problem after launch. We grow with you."
+      }
+    ]
+  },
+  "industries": {
+    "label": "Focus Industries",
+    "heading": "Who We Build For",
+    "items": [
+      {
+        "name": "Health & Medical",
+        "desc": "Building tools that make healthcare more accessible, legible, and humane."
+      },
+      {
+        "name": "Beauty & Wellness",
+        "desc": "Specialized booking management systems and digital marketplaces."
+      },
+      {
+        "name": "Core Tech",
+        "desc": "Products and infrastructure that support business across the board."
+      }
+    ],
+    "form": {
+      "label": "Get in touch",
+      "heading": "Build with us.",
+      "success": "Message received. We'll be in touch.",
+      "nameLabel": "Name",
+      "namePlaceholder": "Your name",
+      "emailLabel": "Email",
+      "messagePlaceholder": "Tell us about your project…",
+      "messageLabel": "What are you building?",
+      "sendBtn": "Send message",
+      "sendingBtn": "Sending…",
+      "errorMsg": "Something went wrong. Try again."
+    }
+  },
+  "contact": {
+    "label": "Contact",
+    "heading": "Tell us what you are working on.",
+    "body": "We come back within 2 business days. No pressure, no pitch deck required.",
+    "nameLabel": "Your name",
+    "emailLabel": "Email address",
+    "messageLabel": "Tell us about it",
+    "budgetLabel": "Rough budget (optional)",
+    "submitBtn": "Send it",
+    "submittingBtn": "Sending...",
+    "successHeading": "Got it.",
+    "successBody": "Your message is in. We will be back within 2 business days. Keep building.",
+    "errorName": "Name is required.",
+    "errorEmail": "Email is required.",
+    "errorEmailInvalid": "Enter a valid email address.",
+    "errorMessage": "Tell us what you are working on."
+  },
+  "stats": {
+    "items": [
+      { "value": "2",    "label": "Hubs",    "sub": "Cairo and Amsterdam" },
+      { "value": "3",    "label": "Sectors", "sub": "Health. Beauty. Technology." },
+      { "value": "EMEA", "label": "Region",  "sub": "70+ markets" },
+      { "value": "2024", "label": "Founded", "sub": "—" }
+    ]
+  },
+  "footer": {
+    "srLabel": "KLUB404",
+    "contactLabel": "Contact",
+    "ctaHeading": "Build with us",
+    "ctaBody": "Let's chat",
+    "email": "hello@klub404.com",
+    "amsterdamLabel": "Amsterdam",
+    "cairoLabel": "Cairo",
+    "registrationId": "Business registration ID",
+    "copyright": "KLUB404 © 2025",
+    "location": "Cairo & Amsterdam"
+  }
+}
