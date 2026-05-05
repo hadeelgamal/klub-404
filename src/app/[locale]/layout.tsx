@@ -4,6 +4,7 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
 import { SmoothScrollProvider } from '@/lib/lenis'
+import LocaleToggle from '@/components/ui/LocaleToggle'
 import '../globals.css'
 
 const notoSans = Noto_Sans({
@@ -90,6 +91,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html lang={locale} dir={dir} className={fontVars}>
       <body style={isAr ? { fontFamily: 'var(--font-arabic), system-ui, sans-serif' } : undefined}>
         <NextIntlClientProvider messages={messages}>
+          <LocaleToggle />
           <SmoothScrollProvider>{children}</SmoothScrollProvider>
         </NextIntlClientProvider>
       </body>
