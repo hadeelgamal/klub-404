@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Noto_Sans, Noto_Sans_Display, Cormorant_Garamond, Tajawal } from 'next/font/google'
+import { Noto_Sans, Noto_Sans_Display, Cormorant_Garamond, Cairo } from 'next/font/google'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
@@ -28,7 +28,7 @@ const cormorant = Cormorant_Garamond({
   display: 'swap',
 })
 
-const tajawal = Tajawal({
+const cairo = Cairo({
   subsets: ['arabic'],
   weight: ['400', '500', '700', '800'],
   variable: '--font-arabic',
@@ -83,7 +83,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     notoSans.variable,
     notoDisplay.variable,
     cormorant.variable,
-    tajawal.variable,
+    cairo.variable,
   ].join(' ')
 
   return (
