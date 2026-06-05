@@ -1,13 +1,5 @@
-import Navigation from '@/components/ui/Navigation'
-import Hero from '@/components/sections/Hero'
-import ClientSections from './ClientSections'
+import { redirect } from 'next/navigation'
 
-export default function Home() {
-  return (
-    <main>
-      <Navigation />
-      <Hero />
-      <ClientSections />
-    </main>
-  )
+export default function RootPage() {
+  redirect('/en')
 }
